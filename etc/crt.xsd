@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © Ghost Unicorns snc. All rights reserved.
+  ~ See LICENSE for license details.
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="config">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="type" type="typeDeclaration" minOccurs="0" maxOccurs="unbounded">
+                    <xs:unique name="uniqueTypeParam">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Param name should be unique in scope of type
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:selector xpath="param" />
+                        <xs:field xpath="@name" />
+                    </xs:unique>
+                </xs:element>
+            </xs:choice>
+        </xs:complexType>
+        <xs:unique name="uniqueType">
+            <xs:annotation>
+                <xs:documentation>
+                    Type name should be unique in scope of file
+                </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath="type" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+
+    <xs:complexType name="typeDeclaration">
+        <xs:sequence>
+            <xs:element name="description"/>
+            <xs:element name="usage"/>
+            <xs:element name="collectors" type="collectorsDeclaration" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="refiners" type="refinersDeclaration" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="transferors" type="transferorsDeclaration" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="logger" type="modelName" use="required"/>
+        <xs:attribute name="config" type="modelName" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="collectorsDeclaration">
+        <xs:sequence>
+            <xs:element name="collector" type="collectorDeclaration" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="collectorDeclaration">
+        <xs:complexContent>
+            <xs:extension base="crtType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="refinersDeclaration">
+        <xs:sequence>
+            <xs:element name="refiner" type="refinerDeclaration" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="refinerDeclaration">
+        <xs:complexContent>
+            <xs:extension base="crtType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="transferorsDeclaration">
+        <xs:sequence>
+            <xs:element name="transferor" type="transferorDeclaration" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="transferorDeclaration">
+        <xs:complexContent>
+            <xs:extension base="crtType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="crtType" abstract="true" mixed="true">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="sortOrder" type="xs:integer" use="required"/>
+        <xs:attribute name="model" type="modelName" use="required"/>
+        <xs:attribute name="description" type="xs:string"/>
+        <xs:attribute name="logger" type="modelName"/>
+        <xs:attribute name="config" type="modelName"/>
+    </xs:complexType>
+
+    <xs:simpleType name="modelName">
+        <xs:annotation>
+            <xs:documentation>
+                A string that matches a Fully Qualified Class Name from PHP, especially not starting
+                with a backslash as this is an invalid character to start a class name with but a
+                somewhat common mistake so this simple type can be used to validate against it
+                already
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(\\?[a-zA-Z_&#x7f;-&#xff;][a-zA-Z0-9_&#x7f;-&#xff;]*)(\\[a-zA-Z_&#x7f;-&#xff;][a-zA-Z0-9_&#x7f;-&#xff;]*)*"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright © GhostUnicorns spa. All rights reserved.
+  ~ See LICENSE and/or COPYING.txt for license details.
+  -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="GhostUnicorns\CrtConfigDefinition\Model\ConfigInterface"
+                type="GhostUnicorns\CrtConfigDefinition\Model\Config"/>
+
+    <virtualType name="GhostUnicorns\CrtConfigDefinition\Model\Config\Data\Virtual"
+                 type="Magento\Framework\Config\Data">
+        <arguments>
+            <argument name="reader" xsi:type="object">
+                GhostUnicorns\CrtConfigDefinition\Model\Config\Reader\Virtual
+            </argument>
+            <argument name="cacheId" xsi:type="string">crt_config</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="GhostUnicorns\CrtConfigDefinition\Model\Config\Reader\Virtual"
+                 type="Magento\Framework\Config\Reader\Filesystem">
+        <arguments>
+            <argument name="converter" xsi:type="object">
+                GhostUnicorns\CrtConfigDefinition\Model\Config\Converter\Xml
+            </argument>
+            <argument name="schemaLocator" xsi:type="object">
+                GhostUnicorns\CrtConfigDefinition\Model\Config\SchemaLocator\Virtual
+            </argument>
+            <argument name="fileName" xsi:type="string">crt.xml</argument>
+            <argument name="idAttributes" xsi:type="array">
+                <item name="/config/type" xsi:type="string">name</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="GhostUnicorns\CrtConfigDefinition\Model\Config\SchemaLocator\Virtual"
+                 type="Magento\Framework\Config\SchemaLocator">
+        <arguments>
+            <argument name="realPath" xsi:type="string">urn:magento:module:GhostUnicorns_CrtConfigDefinition:etc/crt.xsd</argument>
+        </arguments>
+    </virtualType>
+    <type name="GhostUnicorns\CrtConfigDefinition\Model\Config">
+        <arguments>
+            <argument name="data" xsi:type="object">
+                GhostUnicorns\CrtConfigDefinition\Model\Config\Data\Virtual
+            </argument>
+        </arguments>
+    </type>
+</config>
