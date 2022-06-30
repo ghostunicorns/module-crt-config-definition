@@ -119,7 +119,7 @@ class Config implements ConfigInterface
      */
     public function get(string $key = null, string $default = null): array
     {
-        return $this->data->get($key, $default);
+        return $this->data->get($key, $default) ?? [];
     }
 
     /**
