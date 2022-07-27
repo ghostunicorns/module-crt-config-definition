@@ -127,11 +127,7 @@ class Config implements ConfigInterface
      */
     public function getAllRefiners(): array
     {
-        try {
-            return $this->getCrtTypes('refiner');
-        } catch (Exception $exception) {
-            return [];
-        }
+        return $this->getCrtTypes('refiner') ?: [];
     }
 
     /**
@@ -139,11 +135,7 @@ class Config implements ConfigInterface
      */
     public function getAllTransferors(): array
     {
-        try {
-            return $this->getCrtTypes('transferor');
-        } catch (Exception $exception) {
-            return [];
-        }
+        return $this->getCrtTypes('transferor') ?: [];
     }
 
     /**
